@@ -1,0 +1,7 @@
+- id: pep8
+  name: Ansible-pep8
+  description: Runs 'pycodestyle' with Ansible's configurations
+  entry: pep8
+  language: python
+  types: [python]
+  additional_dependencies: ['pycodestyle']

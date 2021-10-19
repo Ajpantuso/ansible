@@ -26,6 +26,7 @@ setup(
             'ansible-pull=ansible.cli.pull:main',
             'ansible-vault=ansible.cli.vault:main',
             'ansible-connection=ansible.cli.scripts.ansible_connection_cli_stub:main',
+            'pep8=ansible_test.pre_commit_hooks.pep8:main',
         ],
     },
 )

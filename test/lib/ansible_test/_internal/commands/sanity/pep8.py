@@ -53,20 +53,11 @@ class Pep8Test(SanitySingleVersion):
         return [target for target in targets if os.path.splitext(target.path)[1] == '.py' or is_subdir(target.path, 'bin')]
 
     def test(self, args, targets, python):  # type: (SanityConfig, SanityTargets, PythonConfig) -> TestResult
-        current_ignore_file = os.path.join(SANITY_ROOT, 'pep8', 'current-ignore.txt')
-        current_ignore = sorted(read_lines_without_comments(current_ignore_file, remove_blank_lines=True))
-
         settings = self.load_processor(args)
 
         paths = [target.path for target in targets.include]
 
-        cmd = [
-            python.path,
-            '-m', 'pycodestyle',
-            '--max-line-length', '160',
-            '--config', '/dev/null',
-            '--ignore', ','.join(sorted(current_ignore)),
-        ] + paths
+        cmd = pep8_cmd(python.path, paths)
 
         if paths:
             try:
@@ -107,3 +98,18 @@ class Pep8Test(SanitySingleVersion):
             return SanityFailure(self.name, messages=errors)
 
         return SanitySuccess(self.name)
+
+
+def pep8_cmd(python_executable, paths):
+    return [
+        python_executable,
+        '-m', 'pycodestyle',
+        '--max-line-length', '160',
+        '--config', '/dev/null',
+        '--ignore', ','.join(_current_ignore()),
+    ] + paths
+
+
+def _current_ignore():
+    current_ignore_file = os.path.join(SANITY_ROOT, 'pep8', 'current-ignore.txt')
+    return sorted(read_lines_without_comments(current_ignore_file, remove_blank_lines=True))
